@@ -1,0 +1,20 @@
+/*
+LAYOUT: One-Column 
+DESCRIPTION: One-column fluid layout with sidebars stacked in two columns below content
+*/
+aside.sidebar {
+float:left;
+display:inline;
+overflow:hidden;
+padding:10px 1.9%;
+width:46%;
+}
+
+aside#primary {
+clear:both;
+}
+
+footer#footer {
+clear:left;
+width:100%;
+}
