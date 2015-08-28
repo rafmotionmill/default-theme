@@ -29,6 +29,34 @@ add_action( 'wp_enqueue_scripts', 'motionmill_theme_enqueue_scripts' );
 
 
 
+if ( ! function_exists( 'twentyfifteen_comment_nav' ) ) :
+/**
+ * Display navigation to next/previous comments when applicable.
+ *
+ * @since Twenty Fifteen 1.0
+ */
+function twentyfifteen_comment_nav() {
+	// Are there comments to navigate through?
+	if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) :
+	?>
+	<nav class="navigation comment-navigation" role="navigation">
+		<h2 class="screen-reader-text"><?php _e( 'Comment navigation', 'twentyfifteen' ); ?></h2>
+		<div class="nav-links">
+			<?php
+				if ( $prev_link = get_previous_comments_link( __( 'Older Comments', 'twentyfifteen' ) ) ) :
+					printf( '<div class="nav-previous">%s</div>', $prev_link );
+				endif;
+
+				if ( $next_link = get_next_comments_link( __( 'Newer Comments', 'twentyfifteen' ) ) ) :
+					printf( '<div class="nav-next">%s</div>', $next_link );
+				endif;
+			?>
+		</div><!-- .nav-links -->
+	</nav><!-- .comment-navigation -->
+	<?php
+	endif;
+}
+endif;
 
 
 // Generates semantic classes for BODY element
@@ -447,7 +475,7 @@ function widget_sandbox_search($args) {
 ?>
 			<?php echo $before_widget ?>
 				<?php echo $before_title ?><label for="s"><?php echo $title ?></label><?php echo $after_title ?>
-				<form id="searchform" class="blog-search" method="get" action="<?php bloginfo('url') ?>">
+				<form id="searchform" class="blog-search" method="get" action="<?php echo esc_url( home_url() ) ?>">
 					<div>
 						<input id="s" name="s" type="text" class="text" value="<?php the_search_query() ?>" size="10" tabindex="1" />
 						<input type="submit" class="button" value="<?php echo $button ?>" tabindex="2" />
@@ -588,6 +616,15 @@ add_filter( 'archive_meta', 'convert_smilies' );
 add_filter( 'archive_meta', 'convert_chars' );
 add_filter( 'archive_meta', 'wpautop' );
 
+
+//add theme support https://codex.wordpress.org/Content_Width
+if ( ! isset( $content_width ) ) {
+	$content_width = 900;
+}
+
+//add theme support
+add_theme_support( 'automatic-feed-links' );
+
 //wordpress 3.0 stuff
 //support the menu
 add_theme_support( 'nav-menus' );
@@ -605,59 +642,13 @@ add_image_size( 'single-post-thumbnail', 400, 9999 ); // Permalink thumbnail siz
 add_action('wp_footer', 'ga');
 
 function ga() { 
-    // Paste your Google Analytics code here
+// Paste your Google Analytics code here
  } 
 
 // Function to remove meta generator from Wordpress
 remove_action('wp_head', 'wp_generator');
 
-// Function that disables the automatic update message in Wordpress
-//add_filter( 'pre_site_transient_update_core', create_function( '$a', "return null;" ) );
 
-
-// Custom login 
-
-/*function custom_login_logo() {
-echo '<style type="text/css">
-h1 a { background-image:url('.get_bloginfo('template_directory').'/images/motionmill-logo.png) !important; }
-</style>';
-}
-add_action('login_head', 'custom_login_logo');
-*/
-//remove the admin bar
-//add_filter( 'show_admin_bar', '__return_false' );
-
-/* Change Wordpress from email */
-/*function res_fromemail($email) {
-    $wpfrom = get_option('admin_email');
-    return $wpfrom;
-}
-
-function res_fromname($email){
-    $wpfrom = get_option('blogname');
-    return $wpfrom;
-}
-
-add_filter('wp_mail_from', 'res_fromemail');
-add_filter('wp_mail_from_name', 'res_fromname');
-*/
-
-/* Add logo to admin */
-/*function add_logo_css () {
-	echo '<style type="text/css">
-#header-logo {background:url("'.get_bloginfo('template_directory').'/images/admin_logoS.png") no-repeat scroll center center transparent;margin-top:10px;} 
-#wphead { height: auto; float: left; width: 100%; }
-</style>'."\n";
-	echo '<script type="text/javascript">
-/* <![CDATA[ */
-/*jQuery(document).ready(function() {
-	jQuery("#site-heading a:first")'. get_option('blogname') .  '").show();
-});
-/* ]]> */
-/*</script>';
-}
-add_action( "admin_head", 'add_logo_css' );
-*/
 /* Hide dashboard widgets for users */
 add_action( 'wp_dashboard_setup', 'mm_remove_wp_dashboard_widgets' );
 
@@ -667,6 +658,9 @@ function mm_remove_wp_dashboard_widgets() {
 	remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
 }
 /* End Hide dashboard widgets for users */
+
+if ( is_singular() ) wp_enqueue_script( "comment-reply" );
+
 
 //pagination source of this code on: http://www.kriesi.at/archives/how-to-build-a-wordpress-post-pagination-without-plugin
 function kriesi_pagination($pages = '', $range = 2)

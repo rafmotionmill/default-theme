@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />  
 	<link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url') ?>" />
      <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
-  <script type="text/javascript" src="<?php bloginfo('template_url') ?>/js/modernizr-1.5.min.js"> </script>
+  <script type="text/javascript" src="<?php echo esc_url( get_template_directory_uri() )?>/js/modernizr-1.5.min.js"> </script>
   
 <?php wp_head() // For plugins ?>
 	<link rel="alternate" type="application/rss+xml" href="<?php bloginfo('rss2_url') ?>" title="<?php printf( __( '%s latest posts', 'sandbox' ), esc_html( get_bloginfo('name'), 1 ) ) ?>" />
@@ -32,7 +32,7 @@
 
 	<header id="header">
 		<section id="masthead">
-				<h1 id="blog-title"><span><a href="<?php bloginfo('url') ?>/" title="<?php bloginfo('name') ?>" rel="home"><?php bloginfo('name') ?></a></span></h1>
+				<h1 id="blog-title"><span><a href="<?php echo esc_url( home_url() ) ?>/" title="<?php bloginfo('name') ?>" rel="home"><?php bloginfo('name') ?></a></span></h1>
 				<h2 id="blog-description"><?php bloginfo('description') ?></h2>
 
 			<div id="access" role="navigation">
